@@ -13,15 +13,18 @@ if [[ $term = "st" ]]; then
 	transset-df "100" --id "$WINDOWID" >/dev/null
 
 ##############################################################################################################
-    
+
+function git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/'
+}
+
 function prompt_left() {
 	host=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
 	nf=$(ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g')
-	if [ -e ".git/config" ]; then
-		branch=$(grep "branch" .git/config | grep -o '"[^"]*"' | sed 's/\"//g')	
-		echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m \033[01;34m $branch\033[00;37m has \033[01;33m$nf files\033[0m"
+	if git rev-parse --git-dir > /dev/null 2>&1; then
+		echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m \033[01;34m$(git_branch)\033[00;37m has \033[01;33m$nf files\033[0m"
 	else
-	  echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m has \033[01;33m$nf files\033[0m"
+		echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m has \033[01;33m$nf files\033[0m"
 	fi
 }
 
