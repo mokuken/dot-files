@@ -17,7 +17,12 @@ if [[ $term = "st" ]]; then
 function prompt_left() {
 	host=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
 	nf=$(ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g')
+	directory=$(pwd)
+	if [[ "$directory" == "/home/mokuken/github/my-web-codes" ]]; then
+	echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m \033[01;34m main\033[00;37m has \033[01;33m$nf files\033[0m"
+	else
 	echo -e "\033[01;32m\u\033[0;37m at \033[01;36m$host\033[0;37m on \033[01;33m\W\033[0;37m has \033[01;33m$nf files\033[0m"
+	fi
 }
 
 function prompt_lower() {
@@ -27,9 +32,10 @@ function prompt_lower() {
 function prompt() {
 	local EXIT="$?"
 	history -a
+	compensate=28
 	good=$(echo -e "\[\033[01;32m\]  \[\033[01;36m\]\\\t\[\033[0m\]")
 	bad=$(echo -e "\[\033[01;31m\]  \[\033[01;36m\]\\\t\[\033[0m\]")
-    compensate=28
+    
 	if [ $EXIT != 0 ]; then
 	PS1=$(printf "%*s\r%s\n$(prompt_lower) " "$(($(tput cols)+${compensate}))" "$bad" "$(prompt_left)")
 	else
